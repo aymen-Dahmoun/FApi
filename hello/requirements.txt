@@ -1,8 +1,8 @@
 fastapi
 uvicorn[standard]
 python-dotenv
-{% if use_db %}
+
+
 sqlalchemy
 passlib[bcrypt]
 pydantic[email]
-{% endif %}

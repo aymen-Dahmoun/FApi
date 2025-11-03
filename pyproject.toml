@@ -1,8 +1,8 @@
 [project]
-name = "fastapi-start"
+name = "fapi"
 version = "0.1.0"
 description = "FastAPI project scaffolder CLI"
-authors = [{name="Your Name"}]
+authors = [{name="Dahmoun Mouaine Aymen"}]
 requires-python = ">=3.10"
 
 dependencies = [
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-fastapi-start = "fastapi_start.cli:app"
+fapi = "fapi.cli:app"
 
 [build-system]
 requires = ["setuptools", "wheel"]

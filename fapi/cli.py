@@ -40,13 +40,32 @@ def create(project_name: str):
 
     typer.echo(f"Creating FastAPI project: {project_name}... ✅")
 
-    context = {"project_name": project_name}
+    use_db = typer.confirm("do you want to use a db?")
+    use_routes = typer.confirm("do you want to generate routes?")
+
+    
+    db_choice = typer.prompt("Choose a Database (sqlite/postgres)", default="sqlite") if use_db else None 
+
+    context = {"project_name": project_name, "use_db":use_db, "db_choice": db_choice, "use_routes": use_routes}
 
     # Create folders
     (project_dir / "app").mkdir(parents=True, exist_ok=True)
 
     # Render templates
     render_template("app/main.py.j2", project_dir / "app/main.py", context)
+    (project_dir / "app" / "core").mkdir()
+    render_template("app/core/config.py.j2", project_dir / "app/core/config.py", context)
+    if use_db:
+        (project_dir / "app" / "models").mkdir()
+        (project_dir / "app" / "schemas").mkdir()
+        (project_dir / "app" / "crud").mkdir()
+        render_template("app/crud/user.py.j2", project_dir / "app/crud/user.py", context)
+        render_template("app/core/database.py.j2", project_dir / "app/core/database.py", context)
+        render_template("app/models/user.py.j2", project_dir / "app/models/user.py", context)
+        render_template("app/schemas/user.py.j2", project_dir / "app/schemas/user.py", context)
+    if use_routes:
+        (project_dir / "app" / "api").mkdir()
+        render_template("app/api/router.py.j2", project_dir / "app/api/router.py", context)
     render_template("requirements.txt.j2", project_dir / "requirements.txt", context)
 
     # Create .env example
