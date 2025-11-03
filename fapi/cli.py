@@ -30,7 +30,15 @@ def render_template(src, dest, context):
 
 
 @app.command()
-def create(project_name: str):
+def create(
+    project_name: str = typer.Argument(...),
+    db: str = typer.Option(
+        None, "--db", help="Database: sqlite or postgres", case_sensitive=False
+    ),
+    routes: bool = typer.Option(
+        None, "--routes", help="Generate routes?"
+    ),
+):
     """Create a new FastAPI project"""
     project_dir = Path(project_name)
 
@@ -39,12 +47,22 @@ def create(project_name: str):
         raise typer.Exit()
 
     typer.echo(f"Creating FastAPI project: {project_name}... ✅")
+    if db is None:
+        use_db = typer.confirm("do you want to use a db?")
+        db_choice = typer.prompt("Choose a Database (sqlite/postgres)", default="sqlite") if use_db else None
+    else:
+        use_db = db.lower() in ["postgres", "sqlite"]
+        db_choice = db.lower()
+        if not use_db: 
+            typer.echo(f"Invalid DB option! {db} neither 'sqlite' not 'postgres")
+            raise typer.Exit() 
 
-    use_db = typer.confirm("do you want to use a db?")
-    use_routes = typer.confirm("do you want to generate routes?")
+    if routes is None:
+        use_routes = typer.confirm("do you want to generate routes?")
+    else:
+        use_routes = routes
 
     
-    db_choice = typer.prompt("Choose a Database (sqlite/postgres)", default="sqlite") if use_db else None 
 
     context = {"project_name": project_name, "use_db":use_db, "db_choice": db_choice, "use_routes": use_routes}
 
