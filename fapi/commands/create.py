@@ -69,6 +69,8 @@ def create(
     (project_dir / ".env").write_text("APP_NAME=" + project_name)
     create_venv(project_dir)
     req_installer(project_dir)
+    (project_dir / ".fastapi").write_text("fastapi-project")
+
 
     typer.echo("✅ Project created successfully!")
     typer.echo(f"Next steps 👉 \n")

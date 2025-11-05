@@ -1,6 +1,6 @@
 import typer
 from pathlib import Path
-from utils.ustils import render_template
+from utils.ustils import render_template, ensure_fastapi_project
 
 add = typer.Typer(help="Adds entities like models, schemas, routes...")
 
@@ -10,6 +10,7 @@ TEMPLATES_DIR = Path("fapi/templates")
 @add.command()
 def route(name: str):
     """Create a new route file"""
+    ensure_fastapi_project()
     if not name:
         typer.echo("You must provide a name for the route")
         raise typer.Exit()
@@ -31,6 +32,7 @@ def model(
     schema: bool = typer.Option(False, "--schema", help="Add a schema file"),
     crud: bool = typer.Option(False, "--crud", help="Add a CRUD file")
 ):
+    ensure_fastapi_project()
     if not name:
         typer.echo("You must provide a name for the model")
         raise typer.Exit()
@@ -58,3 +60,65 @@ def model(
         typer.echo(f"🛠️ CRUD `{name}` created")
 
     typer.echo(f"✅ Model `{name}` created successfully!")
+
+
+@add.command()
+def service(name: str):
+    """Create a new service file"""
+    ensure_fastapi_project()
+
+    if not name:
+        typer.echo("You must provide a name for the service")
+        raise typer.Exit()
+
+    project_path = Path(".")
+    context = {"name": name.lower()}
+
+    routes_dir = project_path / "app/services"
+    routes_dir.mkdir(parents=True, exist_ok=True)
+
+    render_template("app/services/service.py.j2", routes_dir / f"{name.lower()}.py", context)
+
+    typer.echo(f"✅ service `{name}` created successfully!")
+
+
+
+@add.command()
+def crud(name: str):
+    """Create a new crud file"""
+
+    ensure_fastapi_project()
+
+    if not name:
+        typer.echo("You must provide a name for the service")
+        raise typer.Exit()
+
+    project_path = Path(".")
+    context = {"name": name.lower()}
+
+    routes_dir = project_path / "app/crud"
+    routes_dir.mkdir(parents=True, exist_ok=True)
+
+    render_template("app/crud/crud.py.j2", routes_dir / f"{name.lower()}.py", context)
+
+    typer.echo(f"✅ crud `{name}` created successfully!")
+
+@add.command()
+def schema(name: str):
+    """Create a new schema file"""
+    
+    ensure_fastapi_project()
+
+    if not name:
+        typer.echo("You must provide a name for the service")
+        raise typer.Exit()
+
+    project_path = Path(".")
+    context = {"name": name.lower(), "class_name": name.capitalize()}
+
+    routes_dir = project_path / "app/schemas"
+    routes_dir.mkdir(parents=True, exist_ok=True)
+
+    render_template("app/services/schema.py.j2", routes_dir / f"{name.lower()}.py", context)
+
+    typer.echo(f"✅ schema `{name}` created successfully!")
