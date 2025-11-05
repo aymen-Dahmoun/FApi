@@ -43,20 +43,20 @@ def model(
     models_dir = project_path / "app/models"
     models_dir.mkdir(parents=True, exist_ok=True)
 
-    render_template("model.py.j2", models_dir / f"{name.lower()}.py", context)
+    render_template("app/models/model.py.j2", models_dir / f"{name.lower()}.py", context)
 
     if schema:
         schemas_dir = project_path / "app/schemas"
         schemas_dir.mkdir(parents=True, exist_ok=True)
 
-        render_template("schema.py.j2", schemas_dir / f"{name.lower()}_schema.py", context)
+        render_template("app/schemas/schema.py.j2", schemas_dir / f"{name.lower()}_schema.py", context)
         typer.echo(f"📦 Schema `{name}` created")
 
     if crud:
         crud_dir = project_path / "app/crud"
         crud_dir.mkdir(parents=True, exist_ok=True)
 
-        render_template("crud.py.j2", crud_dir / f"{name.lower()}_crud.py", context)
+        render_template("app/crud/crud.py.j2", crud_dir / f"{name.lower()}_crud.py", context)
         typer.echo(f"🛠️ CRUD `{name}` created")
 
     typer.echo(f"✅ Model `{name}` created successfully!")
@@ -119,6 +119,6 @@ def schema(name: str):
     routes_dir = project_path / "app/schemas"
     routes_dir.mkdir(parents=True, exist_ok=True)
 
-    render_template("app/services/schema.py.j2", routes_dir / f"{name.lower()}.py", context)
+    render_template("app/schemas/schema.py.j2", routes_dir / f"{name.lower()}.py", context)
 
     typer.echo(f"✅ schema `{name}` created successfully!")
