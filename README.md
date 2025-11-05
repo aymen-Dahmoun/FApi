@@ -14,6 +14,7 @@ A CLI tool that scaffolds FastAPI projects with optional database and API struct
 | Auto-installs requirements | Installs dependencies based on options          |
 | Jinja2 Templates           | Clean and flexible template system              |
 | Developer friendly         | Simple prompts & automatic setup                |
+| CLI `add` commands         | Add routes, models, schemas, crud, services     |
 
 ---
 
@@ -33,15 +34,18 @@ project_name/
  │  │   └─ user.py
  │  ├─ crud/
  │  │   └─ user.py
+ │  ├─ services/
+ │  │   └─ example.py
  │  ├─ api/
  │  │   └─ router.py
  │  └─ __init__.py
+ ├─ .fastapi                  # internal flag to detect project
  ├─ .env
  ├─ requirements.txt
  └─ .venv/
 ```
 
-If database or routes are disabled, the tool skips those folders
+If database or routes are disabled, the tool skips those folders.
 
 ---
 
@@ -81,11 +85,23 @@ Do you want to use a DB? [y/n]: y
 Choose a Database (sqlite/postgres) [sqlite]: sqlite
 Do you want to generate routes? [y/n]: y
 ```
+
 or simply run
 
 ```bash
 python cli.py myproject --db sqlite --routes
 ```
+
+### Add new components
+
+```bash
+fapi add route product
+fapi add model product --schema --crud
+fapi add service payment
+```
+
+> Auto-detects if you're inside a FastAPI project using `.fastapi`
+
 ---
 
 ## 🏁 Run the project
@@ -104,13 +120,14 @@ uvicorn app.main:app --reload
 
 | Feature                | Status     |
 | ---------------------- | ---------- |
-| Basic FastAPI scaffold | ✅ Done    |
-| Optional DB            | ✅ Done    |
-| Optional API           | ✅ Done    |
-| fapi add route product | 🔜 Planned |
+| Basic FastAPI scaffold | ✅ Done     |
+| Optional DB            | ✅ Done     |
+| Optional API           | ✅ Done     |
+| `fapi add` commands    | ✅ Done     |
+| Auto router import     | 🔜 Planned |
 | Alembic migrations     | 🔜 Planned |
 | Docker support         | 🔜 Planned |
-| deployement on pip     | 🎯 Future  |
+| Publish on PyPI        | 🎯 Future  |
 
 ---
 
