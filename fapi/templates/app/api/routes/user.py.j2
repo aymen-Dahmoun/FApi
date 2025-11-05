@@ -6,7 +6,7 @@ from app.crud.user import create_user, get_users
 from app.core.database import get_db
 {% endif %}
 
-router = APIRouter()
+users_router = APIRouter()
 
 {% if use_db %}
 @router.post("/", response_model=UserResponse)
@@ -19,5 +19,5 @@ def list_users(db: Session = Depends(get_db)):
 {% else %}
 @router.get("/")
 def list_users():
-    return [{"message": "No DB configured"}]
+    return [{"message": "Okay"}]
 {% endif %}
