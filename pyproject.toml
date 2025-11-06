@@ -1,20 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "fapi"
-version = "0.1.0"
-description = "FastAPI project scaffolder CLI"
-authors = [{name="Dahmoun Mouaine Aymen"}]
+name = "fapier"
+version = "0.1.2"
+description = "A command-line tool to scaffold and bootstrap FastAPI projects quickly."
+readme = "README.md"
+authors = [
+    { name = "Dahmoun Mouaine Aymen" }
+]
+license = { text = "MIT" }
 requires-python = ">=3.10"
 
 dependencies = [
     "fastapi",
-    "uvicorn",
+    "uvicorn[standard]",
     "typer[all]",
     "jinja2",
+    "sqlalchemy",
+    "passlib[bcrypt]",
+    "pydantic[email]",
+    "python-dotenv",
+    "pydantic-settings"
 ]
 
-[project.scripts]
-fapi = "fapi.cli:app"
+[project.urls]
+Homepage = "https://github.com/aymen-dahmoun/fapi"
+Repository = "https://github.com/aymen-dahmoun/fapi"
 
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+[project.scripts]
+fapi = "fapier.cli:app"

@@ -2,7 +2,7 @@ import typer
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 import subprocess
-from fapi.constants import TEMPLATES_DIR
+from fapier.constants import TEMPLATES_DIR
 
 
 def create_venv(project_dir: Path):
