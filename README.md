@@ -54,26 +54,23 @@ If database or routes are disabled, the tool skips those folders.
 ### Clone Repo
 
 ```bash
-git clone https://github.com/aymen-Dahmoun/FApi.git
-cd FApi
+pip install fapier
 ```
-
-### Install dependencies
-
+or
 ```bash
-pip install -r requirements.txt
+pipx install fapier
 ```
 
 > Requires Python 3.10+
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ### Create a project
 
 ```bash
-python cli.py myproject
+fapi create myProject
 ```
 
 ### Answer prompts
@@ -98,6 +95,9 @@ python cli.py myproject --db sqlite --routes
 fapi add route product
 fapi add model product --schema --crud
 fapi add service payment
+fapi add schema product
+fapi add crud product
+
 ```
 
 > Auto-detects if you're inside a FastAPI project using `.fastapi`
@@ -127,7 +127,7 @@ uvicorn app.main:app --reload
 | Auto router import     | 🔜 Planned |
 | Alembic migrations     | 🔜 Planned |
 | Docker support         | 🔜 Planned |
-| Publish on PyPI        | 🎯 Future  |
+| Publish on PyPI        | ✅ Done    |
 
 ---
 
