@@ -6,7 +6,7 @@ from app.crud.user import create_user, get_users
 from app.core.database import get_db
 {% endif %}
 
-users_router = APIRouter()
+router = APIRouter()
 
 {% if use_db %}
 @router.post("/", response_model=UserResponse)

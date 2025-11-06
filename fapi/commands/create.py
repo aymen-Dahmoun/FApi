@@ -1,5 +1,5 @@
 import typer
-from utils.ustils import render_template, req_installer, create_venv
+from fapi.utils.ustils import render_template, req_installer, create_venv
 from pathlib import Path
 create_app = typer.Typer(help="FastAPI project generator")
 
@@ -64,7 +64,7 @@ def create(
         render_template("app/api/router.py.j2", project_dir / "app/api/router.py", context)
         render_template("app/services/passwordHash.py.j2", project_dir / "app/services/passwordHash.py", context)
     render_template("requirements.txt.j2", project_dir / "requirements.txt", context)
-
+    render_template("app/__init__.py.j2", project_dir / "app/__init__.py", context)
     # Create .env example
     (project_dir / ".env").write_text("APP_NAME=" + project_name)
     create_venv(project_dir)
