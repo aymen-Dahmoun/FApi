@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     APP_NAME: str = "{{ project_name }}"
 {% if use_db %}
-    DATABASE_URL: str = "{{ 'sqlite:///./app.db' if db_choice == 'sqlite' else 'postgresql://user:pass@localhost/db' }}"
+    DATABASE_URL: str = "{{ 'postgresql://user:pass@localhost/db' if db_choice == 'postgres' else 'sqlite:///./app.db' }}"
 {% endif %}
 
     class Config:

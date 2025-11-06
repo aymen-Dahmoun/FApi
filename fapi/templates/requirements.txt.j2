@@ -6,4 +6,7 @@ pydantic_settings
 sqlalchemy
 passlib[bcrypt]
 pydantic[email]
+{% if db_choice == "postgres" %}
+psycopg2-binary
+{% endif %}
 {% endif %}
