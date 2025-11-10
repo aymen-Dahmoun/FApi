@@ -1,6 +1,6 @@
 import typer
 from pathlib import Path
-from fapier.utils.ustils import render_template, ensure_fastapi_project
+from fapi.utils.ustils import render_template, ensure_fastapi_project
 
 add = typer.Typer(help="Adds entities like models, schemas, routes...")
 

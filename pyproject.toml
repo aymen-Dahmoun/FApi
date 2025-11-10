@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fapier"
-version = "0.1.2"
+version = "0.1.4"
 description = "A command-line tool to scaffold and bootstrap FastAPI projects quickly."
 readme = "README.md"
 authors = [
@@ -29,5 +29,12 @@ dependencies = [
 Homepage = "https://github.com/aymen-dahmoun/fapi"
 Repository = "https://github.com/aymen-dahmoun/fapi"
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"fapi" = ["templates/**/*"]
+
 [project.scripts]
-fapi = "fapier.cli:app"
+fapi = "fapi.cli:app"
+

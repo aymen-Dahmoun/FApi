@@ -1,5 +1,5 @@
 import typer
-from fapier.utils.ustils import render_template, req_installer, create_venv
+from fapi.utils.ustils import render_template, req_installer, create_venv
 from pathlib import Path
 create_app = typer.Typer(help="FastAPI project generator")
 
