@@ -72,7 +72,7 @@ def service(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower()}
+    context = {"name": name.lower(), "calss_name": name.capitalize()}
 
     routes_dir = project_path / "app/services"
     routes_dir.mkdir(parents=True, exist_ok=True)
@@ -94,7 +94,7 @@ def crud(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower()}
+    context = {"name": name.lower(), "calss_name": name.capitalize()}
 
     routes_dir = project_path / "app/crud"
     routes_dir.mkdir(parents=True, exist_ok=True)

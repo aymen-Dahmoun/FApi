@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fapier"
-version = "0.1.4"
+version = "0.1.5"
 description = "A command-line tool to scaffold and bootstrap FastAPI projects quickly."
 readme = "README.md"
 authors = [
