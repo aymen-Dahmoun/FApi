@@ -1,0 +1,12 @@
+import asyncio
+from arq import Worker
+from app.core.config import REDIS_URL
+
+async def sample_task(ctx, word: str):
+    await asyncio.sleep(1)
+    print(f"Processed: {word}")
+    return True
+
+class WorkerSettings:
+    functions = [sample_task]
+    # To configure redis use arq.connections.RedisSettings

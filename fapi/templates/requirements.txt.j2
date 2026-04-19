@@ -4,10 +4,39 @@ python-dotenv
 pydantic_settings
 fapier
 {% if use_db %}
+{% if db_choice == "mongodb" %}
+motor
+beanie
+{% else %}
 sqlalchemy
-bcrypt
-pydantic[email]
 {% if db_choice == "postgres" %}
+{% if is_async %}
+asyncpg
+{% else %}
 psycopg2-binary
 {% endif %}
+{% endif %}
+{% endif %}
+bcrypt
+pydantic[email]
+{% endif %}
+{% if redis %}
+redis
+{% endif %}
+{% if auth %}
+python-jose[cryptography]
+passlib[bcrypt]
+multipart
+python-multipart
+{% endif %}
+{% if websockets %}
+websockets
+{% endif %}
+{% if tasks == "celery" %}
+celery
+{% elif tasks == "arq" %}
+arq
+{% endif %}
+{% if mail %}
+fastapi-mail
 {% endif %}

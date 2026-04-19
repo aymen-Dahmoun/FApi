@@ -46,3 +46,4 @@ dist/
 
 # Others
 *.sqlite3
+dev_guide/
