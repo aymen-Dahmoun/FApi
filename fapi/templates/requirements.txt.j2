@@ -5,7 +5,7 @@ pydantic_settings
 fapier
 {% if use_db %}
 sqlalchemy
-passlib[bcrypt]
+bcrypt
 pydantic[email]
 {% if db_choice == "postgres" %}
 psycopg2-binary

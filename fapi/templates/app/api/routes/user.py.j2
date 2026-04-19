@@ -13,7 +13,7 @@ router = APIRouter()
 def create(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
-@router.get("/")
+@router.get("/", response_model=list[UserResponse])
 def list_users(db: Session = Depends(get_db)):
     return get_users(db)
 {% else %}

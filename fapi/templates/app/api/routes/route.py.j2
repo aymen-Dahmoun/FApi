@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.schemas.{{ name }}_schema import {{ class_name }}Create, {{ class_name }}Response
+from app.core.database import get_db
+from app.schemas.{{ name }} import {{ class_name }}Create, {{ class_name }}Response
 from app.models.{{ name }} import {{ class_name }}
 
 router = APIRouter(prefix="/{{ name }}", tags=["{{ class_name }}"])
@@ -13,7 +13,7 @@ def list_{{ name }}s(db: Session = Depends(get_db)):
 
 @router.post("/", response_model={{ class_name }}Response)
 def create_{{ name }}(data: {{ class_name }}Create, db: Session = Depends(get_db)):
-    obj = {{ class_name }}(**data.dict())
+    obj = {{ class_name }}(**data.model_dump())
     db.add(obj)
     db.commit()
     db.refresh(obj)

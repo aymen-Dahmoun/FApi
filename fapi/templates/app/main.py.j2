@@ -2,10 +2,17 @@ from fastapi import FastAPI
 {% if use_routes %}
 from .api.router import api_router
 {% endif %}
+{% if use_db %}
+from .core.database import engine, Base
+{% endif %}
 
 app = FastAPI(title="{{ project_name }}")
 {% if use_routes %}
 app.include_router(api_router)
+{% endif %}
+
+{% if use_db %}
+Base.metadata.create_all(bind=engine)
 {% endif %}
 
 @app.get("/health")

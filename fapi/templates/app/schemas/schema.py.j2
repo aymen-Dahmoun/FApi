@@ -10,4 +10,4 @@ class {{ class_name }}Response({{ class_name }}Base):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

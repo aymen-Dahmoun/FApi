@@ -1,16 +1,17 @@
 from sqlalchemy.orm import Session
 from app.models.{{ name }} import {{ class_name }}
 from app.schemas.{{ name }} import {{ class_name }}Create
-from passlib.hash import bcrypt
+import bcrypt
 
 
 def create_{{ name }}(db: Session, data: {{ class_name }}Create):
     hashed_password = None
     if hasattr(data, "password"):
-        hashed_password = bcrypt.hash(data.password)
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(data.password.encode('utf-8'), salt).decode('utf-8')
 
     db_obj = {{ class_name }}(
-        **data.dict(exclude={"password"}),
+        **data.model_dump(exclude={"password"}),
         hashed_password=hashed_password if hashed_password else None
     )
 
@@ -33,7 +34,7 @@ def update_{{ name }}(db: Session, id: int, data):
     if not obj:
         return None
 
-    for key, value in data.dict(exclude_unset=True).items():
+    for key, value in data.model_dump(exclude_unset=True).items():
         setattr(obj, key, value)
 
     db.commit()

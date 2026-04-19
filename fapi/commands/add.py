@@ -1,10 +1,10 @@
 import typer
 from pathlib import Path
-from fapi.utils.ustils import render_template, ensure_fastapi_project
+from fapi.utils.utils import render_template, ensure_fastapi_project
 
 add = typer.Typer(help="Adds entities like models, schemas, routes...")
 
-TEMPLATES_DIR = Path("fapi/templates")
+
 
 
 @add.command()
@@ -49,14 +49,14 @@ def model(
         schemas_dir = project_path / "app/schemas"
         schemas_dir.mkdir(parents=True, exist_ok=True)
 
-        render_template("app/schemas/schema.py.j2", schemas_dir / f"{name.lower()}_schema.py", context)
+        render_template("app/schemas/schema.py.j2", schemas_dir / f"{name.lower()}.py", context)
         typer.echo(f"📦 Schema `{name}` created")
 
     if crud:
         crud_dir = project_path / "app/crud"
         crud_dir.mkdir(parents=True, exist_ok=True)
 
-        render_template("app/crud/crud.py.j2", crud_dir / f"{name.lower()}_crud.py", context)
+        render_template("app/crud/crud.py.j2", crud_dir / f"{name.lower()}.py", context)
         typer.echo(f"🛠️ CRUD `{name}` created")
 
     typer.echo(f"✅ Model `{name}` created successfully!")
@@ -72,7 +72,7 @@ def service(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower(), "calss_name": name.capitalize()}
+    context = {"name": name.lower(), "class_name": name.capitalize()}
 
     routes_dir = project_path / "app/services"
     routes_dir.mkdir(parents=True, exist_ok=True)
@@ -94,7 +94,7 @@ def crud(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower(), "calss_name": name.capitalize()}
+    context = {"name": name.lower(), "class_name": name.capitalize()}
 
     routes_dir = project_path / "app/crud"
     routes_dir.mkdir(parents=True, exist_ok=True)
