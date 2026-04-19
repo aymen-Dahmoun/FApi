@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [
     { name = "Dahmoun Mouaine Aymen" }
 ]
-license = { text = "MIT" }
+license = "MIT"
 requires-python = ">=3.10"
 
 dependencies = [
@@ -31,6 +31,9 @@ Repository = "https://github.com/aymen-dahmoun/fapi"
 
 [tool.setuptools]
 include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["fapi*"]
 
 [tool.setuptools.package-data]
 "fapi" = ["templates/**/*"]

@@ -6,28 +6,32 @@ A CLI tool that scaffolds FastAPI projects with optional database and API struct
 
 ## ✅ Features
 
-| Feature                    | Description                                     |
-| -------------------------- | ----------------------------------------------- |
-| Generate FastAPI project   | Creates a full FastAPI folder structure         |
-| Optional Database          | Create project with or without SQLAlchemy setup |
-| Auto-creates virtualenv    | Creates `.venv` inside the project              |
-| Auto-installs requirements | Installs dependencies based on options          |
-| Jinja2 Templates           | Clean and flexible template system              |
-| Developer friendly         | Simple prompts & automatic setup                |
-| CLI `add` commands         | Add routes, models, schemas, crud, services     |
+| Feature                    | Description                                         |
+| -------------------------- | --------------------------------------------------- |
+| Generate FastAPI project   | Creates a full FastAPI folder structure             |
+| Optional Database          | SQLite, PostgreSQL (Async), or MongoDB              |
+| Redis & Caching            | Optional integrated Redis support                   |
+| JWT Authentication         | Scaffold a full Auth system (JWT + Password Hashing) |
+| WebSockets                 | Integrated WebSocket support & boilerplates         |
+| Background Tasks           | Support for Celery or Arq workers                   |
+| Mail Service               | Integrated FastAPI-Mail support                     |
+| `fapi run`                 | Automatically detect entry point & run with uvicorn |
+| `fapi add` commands        | Easily add routes, models, schemas, crud, services  |
 
 ---
 
 ## 📂 Project Output Structure
 
-When DB and routes are enabled:
+When everything is enabled:
 
 ```
 project_name/
  ├─ app/
  │  ├─ main.py
  │  ├─ core/
- │  │   └─ config.py
+ │  │   ├─ config.py      # Core config with .env loading
+ │  │   ├─ database.py    # DB connection (SQLAlchemy Async or MongoDB)
+ │  │   └─ security.py    # JWT & Auth logic
  │  ├─ models/
  │  │   └─ user.py
  │  ├─ schemas/
@@ -35,17 +39,19 @@ project_name/
  │  ├─ crud/
  │  │   └─ user.py
  │  ├─ services/
- │  │   └─ example.py
+ │  │   ├─ email.py       # Mail service
+ │  │   └─ passwordHash.py
  │  ├─ api/
- │  │   └─ router.py
+ │  │   ├─ ws/            # WebSocket routes
+ │  │   ├─ deps.py        # DI for Auth
+ │  │   └─ router.py      # Main router
+ │  ├─ tasks/             # Worker logic (Celery/Arq)
  │  └─ __init__.py
- ├─ .fastapi                  # internal flag to detect project
- ├─ .env
+ ├─ .fastapi              # internal flag to detect project
+ ├─ .env                  # Generated with configured keys
  ├─ requirements.txt
  └─ .venv/
 ```
-
-If database or routes are disabled, the tool skips those folders.
 
 ---
 
@@ -73,21 +79,21 @@ pipx install fapier
 fapi create myProject
 ```
 
-### Answer prompts
-
-Example interaction:
-
-```
-Do you want to use a DB? [y/n]: y
-Choose a Database (sqlite/postgres) [sqlite]: sqlite
-Do you want to generate routes? [y/n]: y
-```
-
-or simply run
+### Advanced Options
 
 ```bash
-python cli.py myproject --db sqlite --routes
+fapi create myProject --db postgres --is-async --redis --auth jwt --websockets --tasks celery --mail --routes
 ```
+
+| Option | Flag | Description |
+| --- | --- | --- |
+| Database | `--db` | `sqlite`, `postgres`, or `mongodb` |
+| Async | `--is-async` | Enable async mode for SQLAlchemy |
+| Redis | `--redis` | Add Redis integration |
+| Auth | `--auth` | Scaffold JWT Auth (`jwt`) |
+| WebSockets | `--websockets`| Add WebSocket boilerplates |
+| Tasks | `--tasks` | `celery` or `arq` |
+| Mail | `--mail` | Add Mail Service |
 
 ### Add new components
 
@@ -100,19 +106,17 @@ fapi add crud product
 
 ```
 
-> Auto-detects if you're inside a FastAPI project using `.fastapi`
-
 ---
 
-## 🏁 Run the project
+## 🚀 Run the project
+
+Just navigate into your project and run:
 
 ```bash
-cd myproject
-source .venv/bin/activate   # Linux/Mac
-# or .venv\Scripts\activate on Windows
-
-uvicorn app.main:app --reload
+fapi run
 ```
+
+This automatically detects the virtual environment and runs the project using `uvicorn app.main:app --reload`.
 
 ---
 
@@ -121,13 +125,16 @@ uvicorn app.main:app --reload
 | Feature                | Status     |
 | ---------------------- | ---------- |
 | Basic FastAPI scaffold | ✅ Done     |
-| Optional DB            | ✅ Done     |
-| Optional API           | ✅ Done     |
+| PostgreSQL & MongoDB   | ✅ Done     |
+| Async DB Support       | ✅ Done     |
+| JWT Authentication     | ✅ Done     |
+| Redis & WebSockets     | ✅ Done     |
+| Background Workers     | ✅ Done     |
+| `fapi run` command     | ✅ Done     |
+| Publish on PyPI        | ✅ Done    |
 | `fapi add` commands    | ✅ Done     |
-| Auto router import     | 🔜 Planned |
 | Alembic migrations     | 🔜 Planned |
 | Docker support         | 🔜 Planned |
-| Publish on PyPI        | ✅ Done    |
 
 ---
 
