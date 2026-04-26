@@ -5,6 +5,53 @@ from fapi.utils.utils import render_template, ensure_fastapi_project
 add = typer.Typer(help="Adds entities like models, schemas, routes...")
 
 
+def _read_env(project_path: Path) -> dict:
+    env = {}
+    env_path = project_path / ".env"
+    if not env_path.exists():
+        return env
+
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        env[key.strip()] = value.strip().strip('"').strip("'")
+
+    return env
+
+
+def _project_context(project_path: Path, name: str) -> dict:
+    env = _read_env(project_path)
+    db_url = env.get("DATABASE_URL", "")
+
+    use_db = bool(db_url)
+    db_choice = None
+    is_async = False
+
+    if db_url.startswith("mongodb"):
+        db_choice = "mongodb"
+        is_async = True
+    elif db_url.startswith("postgresql+asyncpg"):
+        db_choice = "postgres"
+        is_async = True
+    elif db_url.startswith("postgresql"):
+        db_choice = "postgres"
+    elif db_url.startswith("sqlite+aiosqlite"):
+        db_choice = "sqlite"
+        is_async = True
+    elif db_url.startswith("sqlite"):
+        db_choice = "sqlite"
+
+    return {
+        "name": name.lower(),
+        "class_name": name.capitalize(),
+        "use_db": use_db,
+        "db_choice": db_choice,
+        "is_async": is_async,
+    }
+
+
 
 
 @add.command()
@@ -16,7 +63,7 @@ def route(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower(), "class_name": name.capitalize()}
+    context = _project_context(project_path, name)
 
     routes_dir = project_path / "app/api/routes"
     routes_dir.mkdir(parents=True, exist_ok=True)
@@ -38,7 +85,7 @@ def model(
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower(), "class_name": name.capitalize()}
+    context = _project_context(project_path, name)
 
     models_dir = project_path / "app/models"
     models_dir.mkdir(parents=True, exist_ok=True)
@@ -72,7 +119,7 @@ def service(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower(), "class_name": name.capitalize()}
+    context = _project_context(project_path, name)
 
     routes_dir = project_path / "app/services"
     routes_dir.mkdir(parents=True, exist_ok=True)
@@ -94,7 +141,7 @@ def crud(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower(), "class_name": name.capitalize()}
+    context = _project_context(project_path, name)
 
     routes_dir = project_path / "app/crud"
     routes_dir.mkdir(parents=True, exist_ok=True)
@@ -114,7 +161,7 @@ def schema(name: str):
         raise typer.Exit()
 
     project_path = Path(".")
-    context = {"name": name.lower(), "class_name": name.capitalize()}
+    context = _project_context(project_path, name)
 
     routes_dir = project_path / "app/schemas"
     routes_dir.mkdir(parents=True, exist_ok=True)

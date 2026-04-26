@@ -7,11 +7,7 @@ class UserCreate(UserBase):
     password: str
 
 class UserResponse(UserBase):
-{% if db_choice == "mongodb" %}
-    id: str
-{% else %}
     id: int
-{% endif %}
 
     class Config:
         from_attributes = True

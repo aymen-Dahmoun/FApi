@@ -1,3 +1,14 @@
+{% if db_choice == "mongodb" %}
+from beanie import Document
+from pydantic import EmailStr
+
+class User(Document):
+    email: EmailStr
+    hashed_password: str
+
+    class Settings:
+        name = "users"
+{% else %}
 from sqlalchemy import Column, Integer, String
 from app.core.database import Base
 
@@ -7,3 +18,4 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+{% endif %}

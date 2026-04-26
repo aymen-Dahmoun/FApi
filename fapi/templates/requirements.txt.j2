@@ -15,12 +15,14 @@ asyncpg
 {% else %}
 psycopg2-binary
 {% endif %}
+{% elif db_choice == "sqlite" and is_async %}
+aiosqlite
 {% endif %}
 {% endif %}
 bcrypt
 pydantic[email]
 {% endif %}
-{% if redis %}
+{% if redis or tasks %}
 redis
 {% endif %}
 {% if auth %}

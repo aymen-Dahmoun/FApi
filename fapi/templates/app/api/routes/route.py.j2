@@ -1,12 +1,46 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
-from app.core.database import get_db
 from app.schemas.{{ name }} import {{ class_name }}Create, {{ class_name }}Response
 from app.models.{{ name }} import {{ class_name }}
+{% if use_db %}
+{% if db_choice == "mongodb" %}
+{% elif is_async %}
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.database import get_db
+
+{% else %}
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+{% endif %}
+{% endif %}
 
 router = APIRouter(prefix="/{{ name }}", tags=["{{ class_name }}"])
 
+{% if use_db %}
+{% if db_choice == "mongodb" %}
+@router.get("/", response_model=list[{{ class_name }}Response])
+async def list_{{ name }}s():
+    return await {{ class_name }}.find_all().to_list()
+
+@router.post("/", response_model={{ class_name }}Response)
+async def create_{{ name }}(data: {{ class_name }}Create):
+    obj = {{ class_name }}(**data.model_dump())
+    await obj.insert()
+    return obj
+{% elif is_async %}
+@router.get("/", response_model=list[{{ class_name }}Response])
+async def list_{{ name }}s(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select({{ class_name }}))
+    return result.scalars().all()
+
+@router.post("/", response_model={{ class_name }}Response)
+async def create_{{ name }}(data: {{ class_name }}Create, db: AsyncSession = Depends(get_db)):
+    obj = {{ class_name }}(**data.model_dump())
+    db.add(obj)
+    await db.commit()
+    await db.refresh(obj)
+    return obj
+{% else %}
 @router.get("/", response_model=list[{{ class_name }}Response])
 def list_{{ name }}s(db: Session = Depends(get_db)):
     return db.query({{ class_name }}).all()
@@ -18,3 +52,13 @@ def create_{{ name }}(data: {{ class_name }}Create, db: Session = Depends(get_db
     db.commit()
     db.refresh(obj)
     return obj
+{% endif %}
+{% else %}
+@router.get("/")
+def list_{{ name }}s():
+    return []
+
+@router.post("/")
+def create_{{ name }}(data: {{ class_name }}Create):
+    return data
+{% endif %}

@@ -91,11 +91,14 @@ def generate_env(project_dir: Path, context: dict):
             else:
                 env_content += "DATABASE_URL=postgresql://user:pass@localhost/db\n"
         elif context["db_choice"] == "mongodb":
-            env_content += "DATABASE_URL=mongodb://localhost:27017\n"
+            env_content += "DATABASE_URL=mongodb://localhost:27017/app_db\n"
         else:
-            env_content += "DATABASE_URL=sqlite:///./app.db\n"
+            if context["is_async"]:
+                env_content += "DATABASE_URL=sqlite+aiosqlite:///./app.db\n"
+            else:
+                env_content += "DATABASE_URL=sqlite:///./app.db\n"
             
-    if context["redis"]:
+    if context["redis"] or context["tasks"] in ["celery", "arq"]:
         env_content += "REDIS_URL=redis://localhost:6379/0\n"
         
     if context["auth"]:

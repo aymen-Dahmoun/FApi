@@ -1,3 +1,12 @@
+{% if db_choice == "mongodb" %}
+from beanie import Document
+
+class {{ class_name }}(Document):
+    name: str
+
+    class Settings:
+        name = "{{ name }}s"
+{% else %}
 from sqlalchemy import Column, Integer, String
 from app.core.database import Base
 
@@ -6,3 +15,4 @@ class {{ class_name }}(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
+{% endif %}

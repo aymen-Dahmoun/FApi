@@ -1,3 +1,100 @@
+{% if db_choice == "mongodb" %}
+from app.models.{{ name }} import {{ class_name }}
+from app.schemas.{{ name }} import {{ class_name }}Create
+
+
+async def create_{{ name }}(data: {{ class_name }}Create):
+    db_obj = {{ class_name }}(**data.model_dump())
+    await db_obj.insert()
+    return db_obj
+
+
+async def get_{{ name }}s():
+    return await {{ class_name }}.find_all().to_list()
+
+
+async def get_{{ name }}(id):
+    return await {{ class_name }}.get(id)
+
+
+async def update_{{ name }}(id, data):
+    obj = await {{ class_name }}.get(id)
+    if not obj:
+        return None
+
+    for key, value in data.model_dump(exclude_unset=True).items():
+        setattr(obj, key, value)
+
+    await obj.save()
+    return obj
+
+
+async def delete_{{ name }}(id):
+    obj = await {{ class_name }}.get(id)
+    if not obj:
+        return None
+
+    await obj.delete()
+    return obj
+{% elif is_async %}
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.models.{{ name }} import {{ class_name }}
+from app.schemas.{{ name }} import {{ class_name }}Create
+import bcrypt
+
+
+async def create_{{ name }}(db: AsyncSession, data: {{ class_name }}Create):
+    hashed_password = None
+    if hasattr(data, "password"):
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(data.password.encode('utf-8'), salt).decode('utf-8')
+
+    db_obj = {{ class_name }}(
+        **data.model_dump(exclude={"password"}),
+        hashed_password=hashed_password if hashed_password else None
+    )
+
+    db.add(db_obj)
+    await db.commit()
+    await db.refresh(db_obj)
+    return db_obj
+
+
+async def get_{{ name }}s(db: AsyncSession):
+    result = await db.execute(select({{ class_name }}))
+    return result.scalars().all()
+
+
+async def get_{{ name }}(db: AsyncSession, id: int):
+    result = await db.execute(select({{ class_name }}).filter({{ class_name }}.id == id))
+    return result.scalars().first()
+
+
+async def update_{{ name }}(db: AsyncSession, id: int, data):
+    result = await db.execute(select({{ class_name }}).filter({{ class_name }}.id == id))
+    obj = result.scalars().first()
+    if not obj:
+        return None
+
+    for key, value in data.model_dump(exclude_unset=True).items():
+        setattr(obj, key, value)
+
+    await db.commit()
+    await db.refresh(obj)
+    return obj
+
+
+async def delete_{{ name }}(db: AsyncSession, id: int):
+    result = await db.execute(select({{ class_name }}).filter({{ class_name }}.id == id))
+    obj = result.scalars().first()
+    if not obj:
+        return None
+
+    await db.delete(obj)
+    await db.commit()
+    return obj
+{% else %}
 from sqlalchemy.orm import Session
 from app.models.{{ name }} import {{ class_name }}
 from app.schemas.{{ name }} import {{ class_name }}Create
@@ -50,3 +147,4 @@ def delete_{{ name }}(db: Session, id: int):
     db.delete(obj)
     db.commit()
     return obj
+{% endif %}

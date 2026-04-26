@@ -2,12 +2,17 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from app.core.config import DATABASE_URL
+from app.models.user import User
 
 client = AsyncIOMotorClient(DATABASE_URL)
+database = client.get_default_database()
 
 async def init_db():
-    # Initialize Beanie with document models
-    await init_beanie(database=client.app_db, document_models=[])
+    await init_beanie(database=database, document_models=[User])
+
+async def get_db():
+    yield database
+
 {% else %}
 {% if is_async %}
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
