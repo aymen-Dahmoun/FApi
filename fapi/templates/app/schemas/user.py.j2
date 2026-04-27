@@ -1,14 +1,23 @@
-from pydantic import BaseModel, EmailStr
+from typing import Any
+from pydantic import BaseModel, EmailStr, field_validator
+
 
 class UserBase(BaseModel):
     email: EmailStr
 
+
 class UserCreate(UserBase):
     password: str
+
 
 class UserResponse(UserBase):
 {% if db_choice == "mongodb" %}
     id: str
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_object_id_to_str(cls, value: Any) -> str:
+        return str(value)
 {% else %}
     id: int
 {% endif %}

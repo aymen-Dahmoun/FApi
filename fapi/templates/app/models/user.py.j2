@@ -1,9 +1,10 @@
 {% if db_choice == "mongodb" %}
-from beanie import Document
+from typing import Annotated
+from beanie import Document, Indexed
 from pydantic import EmailStr
 
 class User(Document):
-    email: EmailStr
+    email: Annotated[EmailStr, Indexed(unique=True)]
     hashed_password: str
 
     class Settings:

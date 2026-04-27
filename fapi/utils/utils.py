@@ -83,20 +83,21 @@ def scaffold_project(project_dir: Path, context: dict):
 def generate_env(project_dir: Path, context: dict):
     """Generate the .env file based on the project configuration."""
     env_content = f"APP_NAME={context['project_name']}\n"
+    db_name = f"{context['project_name']}_db"
     
     if context["use_db"]:
         if context["db_choice"] == "postgres":
             if context["is_async"]:
-                env_content += "DATABASE_URL=postgresql+asyncpg://user:pass@localhost/db\n"
+                env_content += f"DATABASE_URL=postgresql+asyncpg://user:pass@localhost/{db_name}\n"
             else:
-                env_content += "DATABASE_URL=postgresql://user:pass@localhost/db\n"
+                env_content += f"DATABASE_URL=postgresql://user:pass@localhost/{db_name}\n"
         elif context["db_choice"] == "mongodb":
-            env_content += "DATABASE_URL=mongodb://localhost:27017/app_db\n"
+            env_content += f"DATABASE_URL=mongodb://localhost:27017/{db_name}\n"
         else:
             if context["is_async"]:
-                env_content += "DATABASE_URL=sqlite+aiosqlite:///./app.db\n"
+                env_content += f"DATABASE_URL=sqlite+aiosqlite:///./{db_name}.db\n"
             else:
-                env_content += "DATABASE_URL=sqlite:///./app.db\n"
+                env_content += f"DATABASE_URL=sqlite:///./{db_name}.db\n"
             
     if context["redis"] or context["tasks"] in ["celery", "arq"]:
         env_content += "REDIS_URL=redis://localhost:6379/0\n"
