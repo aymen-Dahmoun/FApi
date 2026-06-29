@@ -1,0 +1,17 @@
+from fastapi import APIRouter
+from app.routers.users import router as users_router
+{% if auth %}
+from app.routers.auth import router as auth_router
+{% endif %}
+{% if websockets %}
+from app.routers.websocket import router as ws_router
+{% endif %}
+
+api_router = APIRouter()
+api_router.include_router(users_router, prefix="/users", tags=["Users"])
+{% if auth %}
+api_router.include_router(auth_router, prefix="/auth", tags=["Auth"])
+{% endif %}
+{% if websockets %}
+api_router.include_router(ws_router, tags=["WebSockets"])
+{% endif %}

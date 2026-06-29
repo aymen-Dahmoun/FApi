@@ -50,20 +50,25 @@ def scaffold_project(project_dir: Path, context: dict):
         render_template("app/schemas/user.py.j2", project_dir / "app/schemas/user.py", context)
         
     if context["use_routes"]:
-        (project_dir / "app" / "api").mkdir()
-        (project_dir / "app" / "services").mkdir()
-        (project_dir / "app" / "api" / "routes").mkdir()
-        render_template("app/api/routes/user.py.j2", project_dir / "app/api/routes/user.py", context)
-        render_template("app/api/router.py.j2", project_dir / "app/api/router.py", context)
-        render_template("app/services/passwordHash.py.j2", project_dir / "app/services/passwordHash.py", context)
+        (project_dir / "app" / "routers").mkdir(exist_ok=True, parents=True)
+        (project_dir / "app" / "services").mkdir(exist_ok=True, parents=True)
+        render_template("app/routers/users.py.j2", project_dir / "app/routers/users.py", context)
+        render_template("app/routers/router.py.j2", project_dir / "app/routers/router.py", context)
+        if not context["auth"]:
+            render_template("app/services/passwordHash.py.j2", project_dir / "app/services/passwordHash.py", context)
 
     if context["auth"]:
         render_template("app/core/security.py.j2", project_dir / "app/core/security.py", context)
-        render_template("app/api/deps.py.j2", project_dir / "app/api/deps.py", context)
+        (project_dir / "app" / "dependencies").mkdir(exist_ok=True, parents=True)
+        render_template("app/dependencies/auth.py.j2", project_dir / "app/dependencies/auth.py", context)
+        render_template("app/services/auth.py.j2", project_dir / "app/services/auth.py", context)
+        if context["use_db"]:
+            render_template("app/schemas/auth.py.j2", project_dir / "app/schemas/auth.py", context)
+            render_template("app/routers/auth.py.j2", project_dir / "app/routers/auth.py", context)
         
     if context["websockets"]:
-        (project_dir / "app" / "api" / "ws").mkdir(exist_ok=True, parents=True)
-        render_template("app/api/ws/sockets.py.j2", project_dir / "app/api/ws/sockets.py", context)
+        (project_dir / "app" / "routers").mkdir(exist_ok=True, parents=True)
+        render_template("app/routers/websocket.py.j2", project_dir / "app/routers/websocket.py", context)
         
     if context["tasks"] == "celery":
         (project_dir / "app" / "tasks").mkdir(exist_ok=True, parents=True)

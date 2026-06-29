@@ -65,10 +65,10 @@ def route(name: str):
     project_path = Path(".")
     context = _project_context(project_path, name)
 
-    routes_dir = project_path / "app/api/routes"
+    routes_dir = project_path / "app/routers"
     routes_dir.mkdir(parents=True, exist_ok=True)
 
-    render_template("app/api/routes/route.py.j2", routes_dir / f"{name.lower()}.py", context)
+    render_template("app/routers/route.py.j2", routes_dir / f"{name.lower()}.py", context)
 
     typer.echo(f"✅ Route `{name}` created successfully!")
 

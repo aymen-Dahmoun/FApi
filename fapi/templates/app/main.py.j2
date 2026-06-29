@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 {% if use_routes %}
-from .api.router import api_router
+from .routers.router import api_router
 {% endif %}
 {% if use_db %}
 {% if db_choice == "mongodb" %}

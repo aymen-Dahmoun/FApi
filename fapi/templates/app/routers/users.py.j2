@@ -1,0 +1,67 @@
+from fastapi import APIRouter, Depends
+{% if use_db %}
+{% if auth %}
+from app.dependencies.auth import get_current_user
+from app.models.user import User
+from app.services.auth import hash_password
+{% endif %}
+from app.schemas.user import UserCreate, UserResponse
+from app.crud.user import create_user, get_users
+{% endif %}
+
+router = APIRouter()
+
+{% if use_db %}
+{% if db_choice == "mongodb" %}
+@router.post("/", response_model=UserResponse)
+async def create(user: UserCreate{% if auth %}, current_user: User = Depends(get_current_user){% endif %}):
+    {% if auth %}
+    hashed_password = hash_password(user.password)
+    return await create_user(user, hashed_password)
+    {% else %}
+    return await create_user(user)
+    {% endif %}
+
+@router.get("/", response_model=list[UserResponse])
+async def list_users_route({% if auth %}current_user: User = Depends(get_current_user){% endif %}):
+    return await get_users()
+
+{% elif is_async %}
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.database import get_db
+
+@router.post("/", response_model=UserResponse)
+async def create(user: UserCreate, db: AsyncSession = Depends(get_db){% if auth %}, current_user: User = Depends(get_current_user){% endif %}):
+    {% if auth %}
+    hashed_password = hash_password(user.password)
+    return await create_user(db, user, hashed_password)
+    {% else %}
+    return await create_user(db, user)
+    {% endif %}
+
+@router.get("/", response_model=list[UserResponse])
+async def list_users_route(db: AsyncSession = Depends(get_db){% if auth %}, current_user: User = Depends(get_current_user){% endif %}):
+    return await get_users(db)
+
+{% else %}
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+
+@router.post("/", response_model=UserResponse)
+def create(user: UserCreate, db: Session = Depends(get_db){% if auth %}, current_user: User = Depends(get_current_user){% endif %}):
+    {% if auth %}
+    hashed_password = hash_password(user.password)
+    return create_user(db, user, hashed_password)
+    {% else %}
+    return create_user(db, user)
+    {% endif %}
+
+@router.get("/", response_model=list[UserResponse])
+def list_users_route(db: Session = Depends(get_db){% if auth %}, current_user: User = Depends(get_current_user){% endif %}):
+    return get_users(db)
+{% endif %}
+{% else %}
+@router.get("/")
+def list_users_route():
+    return [{"message": "Okay"}]
+{% endif %}
